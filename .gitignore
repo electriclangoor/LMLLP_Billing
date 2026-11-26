@@ -3,3 +3,7 @@
 
 # Never publish the signature (upload it in the app instead)
 sign.png
+
+# Never publish history backups (they contain client and invoice data)
+Backups/
+*.json
