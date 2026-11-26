@@ -1050,15 +1050,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (problems.length && !(await askConfirm(`Missing ${problems.join(', ')}. Print anyway?`, 'Print anyway'))) return;
 
       const originalTitle = document.title;
-      const safeStr = (str) => (str || 'Unspecified').trim().replace(/[\/\\?%*:|"<>]/g, '-') || 'Unspecified';
+      // Characters that aren't allowed in file names become "-"
+      const safeStr = (str) => (str || '').trim().replace(/[\/\\?%*:|"<>]/g, '-');
 
-      const docNo = safeStr(formElements.docNo.value);
-      const companyName = safeStr(formElements.clientCompany.value.trim() || formElements.clientName.value.trim());
-      const projectName = safeStr(formElements.projectName.value);
-      const projectType = safeStr(formElements.projectType.value);
+      // <Q|INV>-YYYYMMDD-###_<Company, or Client Name if no company>_<Project Name>_<Project Type>
+      // Blank parts are left out rather than written as a placeholder.
+      const parts = [
+        safeStr(formElements.docNo.value),
+        safeStr(formElements.clientCompany.value) || safeStr(formElements.clientName.value),
+        safeStr(formElements.projectName.value),
+        safeStr(formElements.projectType.value)
+      ].filter(Boolean);
 
       // Browsers use document.title as the default PDF filename
-      document.title = `${docNo}_${companyName}_${projectName}_${projectType}`;
+      document.title = parts.join('_') || originalTitle;
       window.addEventListener('afterprint', () => { document.title = originalTitle; }, { once: true });
 
       saveToHistory();
