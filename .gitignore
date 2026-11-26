@@ -1,0 +1,5 @@
+.DS_Store
+*.log
+
+# Never publish the signature (upload it in the app instead)
+sign.png

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Keep this tool out of search engines (it is still reachable by its link) -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Langoor Media - Business Tools</title>
+  <meta name="description" content="Generate beautiful post-production quotations and invoices for Langoor Media LLP.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=27">
+</head>
+
+<body>
+  
+  <!-- TOP NAVIGATION TABS (Visible on screen, hidden on print) -->
+  <nav class="app-tabs noprint">
+    <div class="tab-logo"><img src="logo-wide.png" alt="Langoor Media"></div>
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-target="tab-quote">Quotation Generator</button>
+      <button class="tab-btn" data-target="tab-invoice">Invoice Generator</button>
+    </div>
+  </nav>
+
+  <div class="app-main-content">
+
+    <!-- ==================== QUOTATION TAB ==================== -->
+    <div class="tab-content active" id="tab-quote">
+      <div class="app-container">
+        <!-- EDITOR PANE -->
+        <aside class="editor-pane noprint">
+          <div class="editor-header">
+            <h1>Quotation Details</h1>
+            <p>Fill out the form to generate a quote.</p>
+          </div>
+
+          <form id="quote-form" class="editor-form">
+            <!-- Client Details -->
+            <section class="form-section">
+              <h2>Client Information</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Client Name</label>
+                  <input type="text" id="quote-client-name" placeholder="John Doe" required>
+                </div>
+                <div class="input-field">
+                  <label>Company</label>
+                  <input type="text" id="quote-client-company" placeholder="Acme Films">
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Email Address</label>
+                <input type="email" id="quote-client-email" placeholder="john@acmefilms.com">
+              </div>
+              <div class="input-field">
+                <label>Client Address</label>
+                <textarea id="quote-client-address" rows="2" placeholder="123 Studio Drive, LA"></textarea>
+              </div>
+              <div class="input-field">
+                <label>Client GSTIN (optional)</label>
+                <input type="text" id="quote-client-gstin" placeholder="27ABCDE1234F1Z5" maxlength="15">
+              </div>
+              <div class="input-field">
+                <label>Client Phone / WhatsApp</label>
+                <input type="tel" id="quote-client-phone" placeholder="98765 43210">
+              </div>
+            </section>
+
+            <!-- Project Details -->
+            <section class="form-section">
+              <h2>Project Details</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Project Name</label>
+                  <input type="text" id="quote-project-name" placeholder="Summer Campaign TVC" required>
+                </div>
+                <div class="input-field">
+                  <label>Quotation No.</label>
+                  <input type="text" id="quote-no" placeholder="Q-20260401" required>
+                </div>
+              </div>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Quote Date</label>
+                  <input type="date" id="quote-date" required>
+                </div>
+                <div class="input-field">
+                  <label>Valid Until</label>
+                  <input type="date" id="quote-valid" required>
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Project Type</label>
+                <input type="text" id="quote-project-type" placeholder="e.g. Video Editing, Branding">
+              </div>
+            </section>
+
+            <!-- Line Items -->
+            <section class="form-section">
+              <h2>Services & Items</h2>
+              <div id="quote-items-container" class="items-container">
+                <!-- Items injected by JS -->
+              </div>
+              <button type="button" class="btn btn-secondary w-full" id="quote-add-item-btn">
+                + Add Service
+              </button>
+            </section>
+
+            <!-- Financials -->
+            <section class="form-section">
+              <h2>Taxes & Extras</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Tax Name</label>
+                  <input type="text" id="quote-tax-name" value="GST">
+                </div>
+                <div class="input-field">
+                  <label>Tax Rate (%)</label>
+                  <input type="number" id="quote-tax-rate" value="18" min="0" step="0.1">
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Discount (₹, before tax)</label>
+                <input type="number" id="quote-discount" value="0" min="0">
+              </div>
+            </section>
+
+            <!-- Terms -->
+            <section class="form-section final-section">
+              <h2>Terms &amp; Conditions</h2>
+              <div class="input-field">
+                <label>One point per line</label>
+                <textarea id="quote-terms" rows="7"></textarea>
+              </div>
+              <div class="terms-actions">
+                <button type="button" class="btn-link" id="quote-terms-default-btn">Use for all new quotations</button>
+                <button type="button" class="btn-link" id="quote-terms-reset-btn">Reset to default</button>
+              </div>
+            </section>
+          </form>
+
+          <div class="editor-footer">
+            <button type="button" class="btn btn-secondary w-full" id="quote-to-invoice-btn" title="Convert this quotation into an invoice">
+              PAISA!
+            </button>
+            <button type="button" class="btn btn-whatsapp w-full" id="quote-whatsapp-btn" title="Open WhatsApp with a message to the client, ready to send">
+              Send on WhatsApp
+            </button>
+            <button type="button" class="btn btn-primary w-full glow" id="quote-print-btn">
+              Print / Download PDF
+            </button>
+            <button type="button" class="btn-link" id="quote-reset-btn">Clear form &amp; start new</button>
+          </div>
+        </aside>
+
+        <!-- PREVIEW PANE -->
+        <main class="preview-pane">
+          <div class="quote-document">
+            <header class="doc-header">
+              <div class="company-banner doc-band">
+                <img src="doc-logo.png" class="doc-logo" alt="Langoor Media">
+                <div class="doc-branding">
+                  <div class="doc-company-name">Langoor Media LLP</div>
+                  <div class="doc-tagline">We Design | We Edit | We Color | We Create</div>
+                  <div class="doc-contact">langoormedia.com | hitmeup@langoormedia.com | +91 9145 303 690</div>
+                </div>
+              </div>
+              <div class="doc-meta-container">
+                <h2 class="doc-title">QUOTATION</h2>
+                <div class="doc-meta">
+                  <div class="meta-grid">
+                    <div class="meta-label">Quote No:</div>
+                    <div class="meta-value" id="doc-quote-no">Q-20260401</div>
+                    <div class="meta-label">Date:</div>
+                    <div class="meta-value" id="doc-quote-date">-</div>
+                    <div class="meta-label">Valid Until:</div>
+                    <div class="meta-value" id="doc-quote-valid">-</div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div class="doc-info-section">
+              <div class="doc-to">
+                <h3>Prepared For:</h3>
+                <div id="doc-quote-client-name" class="font-bold">-</div>
+                <div id="doc-quote-client-company">-</div>
+                <div id="doc-quote-client-email">-</div>
+                <div id="doc-quote-client-address" class="pre-line">-</div>
+                <div id="doc-quote-client-gstin">-</div>
+              </div>
+              <div class="doc-project">
+                <h3>Project:</h3>
+                <div id="doc-quote-project-name" class="highlight-text">-</div>
+                <div id="doc-quote-project-type" class="doc-muted-text">-</div>
+              </div>
+            </div>
+
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th class="col-sno">#</th>
+                  <th class="col-desc">Description of Service</th>
+                  <th class="col-qty">Qty</th>
+                  <th class="col-rate">Rate</th>
+                  <th class="col-amount">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="doc-quote-items-tbody">
+                <!-- Items rendered here -->
+              </tbody>
+            </table>
+
+            <div class="doc-totals-section">
+              <div class="doc-totals-container">
+                <div class="total-row">
+                  <span class="total-label">Subtotal</span>
+                  <span class="total-value" id="doc-quote-subtotal">₹0.00</span>
+                </div>
+                <div class="total-row" id="quote-discount-row" style="display: none;">
+                  <span class="total-label">Discount</span>
+                  <span class="total-value" id="doc-quote-discount-amount">₹0.00</span>
+                </div>
+                <div class="total-row tax-row" id="quote-tax-row">
+                  <span class="total-label" id="doc-quote-tax-label">Tax</span>
+                  <span class="total-value" id="doc-quote-tax-amount">₹0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                  <span class="total-label">Grand Total</span>
+                  <span class="total-value" id="doc-quote-total">₹0.00</span>
+                </div>
+                <div class="amount-words" id="doc-quote-words"></div>
+              </div>
+            </div>
+
+            <footer class="doc-footer">
+              <h4>Terms & Conditions</h4>
+              <ul id="doc-quote-terms">
+                <li>25% advance payment is required before starting the work.</li>
+                <li>Balance payment is required within 45 days of invoice date.</li>
+                <li>Revisions: Includes up to three rounds of revisions per deliverable. Major structural changes may incur additional costs.</li>
+                <li>Delivery schedule to be mutually agreed upon before project commencement.</li>
+                <li>Open project files are not included in this quotation and remain the property of Langoor Media LLP.</li>
+              </ul>
+              <div class="doc-signature">
+                <img src="sign.png" class="doc-sign-img" alt="Signature" onerror="this.style.display='none'" onload="this.style.display='block'" style="max-height: 70px; margin-bottom: 5px;">
+                <div class="signature-line" style="margin-top: 0; width: 100%;">Authorized Signatory</div>
+              </div>
+            </footer>
+            
+            <div class="doc-legal">
+              <div>LLPINACG - 9398 | UDYAM-MH-26-1116946</div>
+              <div>E9/1 - Salunkhe Vihar Society, Salunkhe Vihar Road, Mohammad Wadi, Pune - 411022</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ==================== INVOICE TAB ==================== -->
+    <div class="tab-content" id="tab-invoice">
+      <div class="app-container">
+        <!-- EDITOR PANE -->
+        <aside class="editor-pane noprint">
+          <div class="editor-header">
+            <h1>Invoice Details</h1>
+            <p>Fill out the form to generate an invoice.</p>
+          </div>
+
+          <form id="invoice-form" class="editor-form">
+            <!-- Client Details -->
+            <section class="form-section">
+              <h2>Client Information</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Client Name</label>
+                  <input type="text" id="invoice-client-name" placeholder="John Doe" required>
+                </div>
+                <div class="input-field">
+                  <label>Company</label>
+                  <input type="text" id="invoice-client-company" placeholder="Acme Films">
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Email Address</label>
+                <input type="email" id="invoice-client-email" placeholder="john@acmefilms.com">
+              </div>
+              <div class="input-field">
+                <label>Client Address</label>
+                <textarea id="invoice-client-address" rows="2" placeholder="123 Studio Drive, LA"></textarea>
+              </div>
+              <div class="input-field">
+                <label>Client GSTIN (optional)</label>
+                <input type="text" id="invoice-client-gstin" placeholder="27ABCDE1234F1Z5" maxlength="15">
+              </div>
+              <div class="input-field">
+                <label>Client Phone / WhatsApp</label>
+                <input type="tel" id="invoice-client-phone" placeholder="98765 43210">
+              </div>
+            </section>
+
+            <!-- Project Details -->
+            <section class="form-section">
+              <h2>Invoice Details</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Project Name</label>
+                  <input type="text" id="invoice-project-name" placeholder="Summer Campaign TVC" required>
+                </div>
+                <div class="input-field">
+                  <label>Invoice No.</label>
+                  <input type="text" id="invoice-no" placeholder="INV-20260401" required>
+                </div>
+              </div>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Invoice Date</label>
+                  <input type="date" id="invoice-date" required>
+                </div>
+                <div class="input-field">
+                  <label>Due Date</label>
+                  <input type="date" id="invoice-valid" required>
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Project Type</label>
+                <input type="text" id="invoice-project-type" placeholder="e.g. Video Editing, Branding">
+              </div>
+            </section>
+
+            <!-- Line Items -->
+            <section class="form-section">
+              <h2>Services & Items</h2>
+              <div id="invoice-items-container" class="items-container">
+                <!-- Items injected by JS -->
+              </div>
+              <button type="button" class="btn btn-secondary w-full" id="invoice-add-item-btn">
+                + Add Service
+              </button>
+            </section>
+
+            <!-- Financials -->
+            <section class="form-section">
+              <h2>Taxes & Extras</h2>
+              <div class="input-group-2">
+                <div class="input-field">
+                  <label>Tax Name</label>
+                  <input type="text" id="invoice-tax-name" value="GST">
+                </div>
+                <div class="input-field">
+                  <label>Tax Rate (%)</label>
+                  <input type="number" id="invoice-tax-rate" value="18" min="0" step="0.1">
+                </div>
+              </div>
+              <div class="input-field">
+                <label>Discount (₹, before tax)</label>
+                <input type="number" id="invoice-discount" value="0" min="0">
+              </div>
+              <div class="input-field">
+                <label>Amount Received So Far (₹)</label>
+                <input type="number" id="invoice-amount-paid" value="0" min="0">
+              </div>
+            </section>
+
+            <!-- Terms -->
+            <section class="form-section final-section">
+              <h2>Terms &amp; Conditions</h2>
+              <div class="input-field">
+                <label>One point per line</label>
+                <textarea id="invoice-terms" rows="7"></textarea>
+              </div>
+              <div class="terms-actions">
+                <button type="button" class="btn-link" id="invoice-terms-default-btn">Use for all new invoices</button>
+                <button type="button" class="btn-link" id="invoice-terms-reset-btn">Reset to default</button>
+              </div>
+            </section>
+          </form>
+
+          <div class="editor-footer">
+            <button type="button" class="btn btn-whatsapp w-full" id="invoice-whatsapp-btn" title="Open WhatsApp with a message to the client, ready to send">
+              Send on WhatsApp
+            </button>
+            <button type="button" class="btn btn-primary w-full glow" id="invoice-print-btn">
+              Print / Download PDF
+            </button>
+            <button type="button" class="btn-link" id="invoice-reset-btn">Clear form &amp; start new</button>
+          </div>
+        </aside>
+
+        <!-- PREVIEW PANE -->
+        <main class="preview-pane">
+          <div class="quote-document">
+            <header class="doc-header">
+              <div class="company-banner doc-band">
+                <img src="doc-logo.png" class="doc-logo" alt="Langoor Media">
+                <div class="doc-branding">
+                  <div class="doc-company-name">Langoor Media LLP</div>
+                  <div class="doc-tagline">We Design | We Edit | We Color | We Create</div>
+                  <div class="doc-contact">langoormedia.com | hitmeup@langoormedia.com | +91 9145 303 690</div>
+                </div>
+              </div>
+              <div class="doc-meta-container">
+                <h2 class="doc-title">INVOICE</h2>
+                <div class="doc-meta">
+                  <div class="meta-grid">
+                    <div class="meta-label">Invoice No:</div>
+                    <div class="meta-value" id="doc-invoice-no">INV-20260401</div>
+                    <div class="meta-label">Date:</div>
+                    <div class="meta-value" id="doc-invoice-date">-</div>
+                    <div class="meta-label">Due Date:</div>
+                    <div class="meta-value" id="doc-invoice-valid">-</div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div class="doc-info-section">
+              <div class="doc-to">
+                <h3>Billed To:</h3>
+                <div id="doc-invoice-client-name" class="font-bold">-</div>
+                <div id="doc-invoice-client-company">-</div>
+                <div id="doc-invoice-client-email">-</div>
+                <div id="doc-invoice-client-address" class="pre-line">-</div>
+                <div id="doc-invoice-client-gstin">-</div>
+              </div>
+              <div class="doc-project">
+                <h3>Project:</h3>
+                <div id="doc-invoice-project-name" class="highlight-text">-</div>
+                <div id="doc-invoice-project-type" class="doc-muted-text">-</div>
+              </div>
+            </div>
+
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th class="col-sno">#</th>
+                  <th class="col-desc">Description of Service</th>
+                  <th class="col-qty">Qty</th>
+                  <th class="col-rate">Rate</th>
+                  <th class="col-amount">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="doc-invoice-items-tbody">
+                <!-- Items rendered here -->
+              </tbody>
+            </table>
+
+            <div class="doc-totals-section">
+              <div class="doc-bank">
+                <strong>Bank Details</strong><br>
+                Bank Name: HDFC Bank<br>
+                Beneficiary Name: LANGOOR MEDIA LLP<br>
+                A/c No: 50200096850029<br>
+                IFSC: HDFC0002454
+              </div>
+              <div class="doc-totals-container">
+                <div class="total-row">
+                  <span class="total-label">Subtotal</span>
+                  <span class="total-value" id="doc-invoice-subtotal">₹0.00</span>
+                </div>
+                <div class="total-row" id="invoice-discount-row" style="display: none;">
+                  <span class="total-label">Discount</span>
+                  <span class="total-value" id="doc-invoice-discount-amount">₹0.00</span>
+                </div>
+                <div class="total-row tax-row" id="invoice-tax-row">
+                  <span class="total-label" id="doc-invoice-tax-label">Tax</span>
+                  <span class="total-value" id="doc-invoice-tax-amount">₹0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                  <span class="total-label" id="doc-invoice-total-label">Total Due</span>
+                  <span class="total-value" id="doc-invoice-total">₹0.00</span>
+                </div>
+                <div class="total-row paid-row" id="invoice-paid-row" style="display: none;">
+                  <span class="total-label">Amount Received</span>
+                  <span class="total-value" id="doc-invoice-paid">₹0.00</span>
+                </div>
+                <div class="total-row balance-row" id="invoice-balance-row" style="display: none;">
+                  <span class="total-label" id="doc-invoice-balance-label">Balance Due</span>
+                  <span class="total-value" id="doc-invoice-balance">₹0.00</span>
+                </div>
+                <div class="amount-words" id="doc-invoice-words"></div>
+              </div>
+            </div>
+
+            <footer class="doc-footer">
+              <h4>Payment Details & Terms</h4>
+              <ul id="doc-invoice-terms">
+                <li>25% advance payment is required before starting the work.</li>
+                <li>Balance payment is required within 45 days of invoice date.</li>
+                <li>Revisions: Includes up to three rounds of revisions per deliverable. Major structural changes may incur additional costs.</li>
+                <li>Open project files are not included in this invoice and remain the property of Langoor Media LLP.</li>
+                <li>Late payments may incur an additional 1.5% interest per month.</li>
+              </ul>
+              <div class="doc-sign-row">
+                <div class="doc-signature">
+                  <img src="sign.png" class="doc-sign-img" alt="Signature" onerror="this.style.display='none'" onload="this.style.display='block'" style="max-height: 70px; margin-bottom: 5px;">
+                  <div class="signature-line" style="margin-top: 0; width: 100%;">Authorized Signatory</div>
+                </div>
+              </div>
+            </footer>
+            
+            <div class="doc-legal">
+              <div>LLPINACG - 9398 | UDYAM-MH-26-1116946</div>
+              <div>E9/1 - Salunkhe Vihar Society, Salunkhe Vihar Road, Mohammad Wadi, Pune - 411022</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=27"></script>
+</body>
+</html>
