@@ -1704,3 +1704,26 @@ body {
 @media print {
   .doc-legal { padding-top: 10px; padding-bottom: 10px; }
 }
+
+/* App name label beside the logo in the top bar */
+.tab-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tab-logo .app-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--brand-yellow, #FFCE00);
+  -webkit-text-fill-color: var(--brand-yellow, #FFCE00);
+  padding-left: 14px;
+  border-left: 1px solid rgba(255, 206, 0, 0.45);
+  line-height: 1.6;
+}
+@media screen and (max-width: 600px) {
+  .tab-logo .app-name { display: none; }
+}
