@@ -1721,7 +1721,9 @@ body {
   color: var(--brand-yellow, #FFCE00);
   -webkit-text-fill-color: var(--brand-yellow, #FFCE00);
   padding-left: 14px;
-  border-left: 1px solid rgba(255, 206, 0, 0.45);
+  border-left: 2px solid rgba(255, 206, 0, 0.45);
+  padding-top: 5px;
+  padding-bottom: 5px;
   line-height: 1.6;
 }
 @media screen and (max-width: 600px) {
