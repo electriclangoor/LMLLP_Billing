@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Biller" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/biller_black</item>
+        <item name="android:colorAccent">@color/biller_yellow</item>
+        <item name="android:windowSplashScreenBackground">@color/biller_black</item>
+    </style>
+</resources>

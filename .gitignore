@@ -16,3 +16,10 @@ desktop/dist/
 desktop/web/
 desktop/build/icon-out/
 !desktop/build/Biller.icon/icon.json
+android/.gradle/
+android/build/
+android/app/build/
+android/app/src/main/assets/
+android/local.properties
+android/keystore/
+android/dist/

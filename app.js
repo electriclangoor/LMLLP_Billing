@@ -100,7 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return { ...t, status, overdue };
   };
 
+  // In the Android app, Biller's own bridge saves files to Downloads (Android can't save blob links)
+  const android = window.BillerAndroid;
   const downloadFile = (filename, text, type) => {
+    if (android) { android.saveFile(filename, text, type); return; }
     const blob = new Blob([text], { type });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -284,7 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const BACKUP_LAST_KEY = 'lm-last-backup';
   const BACKUP_SNOOZE_KEY = 'lm-backup-snooze';
   const REMIND_DAYS = 14;
-  const canPickFolder = 'showDirectoryPicker' in window;
+  // The Android app saves backups to Downloads instead (Android can't keep a folder link between launches)
+  const canPickFolder = !android && 'showDirectoryPicker' in window;
 
   const idb = (() => {
     let dbPromise = null;
@@ -471,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lastText = days === null ? 'never' : days === 0 ? 'today' : `${days} day(s) ago`;
     if (!canPickFolder) {
       const k = await askChoice(
-        `Last backup: ${lastText}.\n\nThis browser can't save backups to a folder automatically (Chrome or Edge can). You'll get a reminder every ${REMIND_DAYS} days to download a backup file instead.`,
+        `Last backup: ${lastText}.\n\n${android ? `Backups are saved to Downloads/Biller on this phone. You'll get a reminder every ${REMIND_DAYS} days to save one.` : `This browser can't save backups to a folder automatically (Chrome or Edge can). You'll get a reminder every ${REMIND_DAYS} days to download a backup file instead.`}`,
         [{ key: 'close', label: 'Close' }, { key: 'download', label: 'Download backup now', primary: true }]);
       if (k === 'download') downloadBackup();
       return;
@@ -495,6 +499,14 @@ document.addEventListener('DOMContentLoaded', () => {
   idb.get('backupDir').then(h => { backupDir = h || null; updateBackupUI(); });
 
   // Hooks for the Biller Mac app's File > Backup menu
+  // Android back gesture: close an open dialog, then an open history list; false lets the app go back
+  window.billerBack = () => {
+    if (!modal.hidden) { modal.click(); return true; }
+    const open = [...document.querySelectorAll('.history-panel[open]')].find(p => p.offsetParent);
+    if (open) { open.open = false; return true; }
+    return false;
+  };
+
   window.billerDesktop = {
     backupNow: async () => {
       if (!backupDir) { downloadBackup(); return; }
@@ -1079,6 +1091,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('afterprint', () => { document.title = originalTitle; }, { once: true });
 
       saveToHistory();
+      if (android) {
+        // Android's print sheet (Save as PDF or a printer), named after the document
+        android.print(document.title);
+        setTimeout(() => { document.title = originalTitle; }, 1500);
+        return;
+      }
       window.print();
     });
 
@@ -1136,7 +1154,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const number = whatsappNumber();
       const url = `https://wa.me/${number}?text=${encodeURIComponent(whatsappMessage())}`;
       saveToHistory();
-      window.open(url, '_blank', 'noopener');
+      if (android) android.openExternal(url);
+      else window.open(url, '_blank', 'noopener');
     });
 
     // --- History: save, list, reuse ---
