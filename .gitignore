@@ -15,3 +15,4 @@ desktop/node_modules/
 desktop/dist/
 desktop/web/
 desktop/build/icon-out/
+!desktop/build/Biller.icon/icon.json
