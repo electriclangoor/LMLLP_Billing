@@ -8,10 +8,10 @@
       <stop offset="1" stop-color="#FFC400"/>
     </linearGradient>
   </defs>
-  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#g)" filter="url(#s)"/>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#FFCE00" filter="url(#s)"/>
   <g transform="translate(174 174) scale(10.5625)">
     <path d="M13 8H51V56L45.57 51.5 40.14 56 34.71 51.5 29.29 56 23.86 51.5 18.43 56 13 51.5Z" fill="#111"/>
-    <g fill="none" stroke="#FFCE00" stroke-width="5.5" stroke-linejoin="round">
+    <g fill="none" stroke="#35BB13" stroke-width="5.5" stroke-linejoin="round">
       <path d="M21 16.5H43M21 25H43"/>
       <path d="M21 16.5H29C37.5 16.5 37.5 33 29 33H23L37 46" stroke-linecap="round"/>
     </g>

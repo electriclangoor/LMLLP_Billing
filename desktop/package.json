@@ -9,7 +9,8 @@
   "scripts": {
     "copy-web": "node copy-web.js",
     "start": "npm run copy-web && electron .",
-    "dist": "npm run copy-web && electron-builder --mac dmg --arm64"
+    "dist": "npm run copy-web && rm -rf build/icon-out && mkdir -p build/icon-out && npm run icon && electron-builder --mac dmg --arm64",
+    "icon": "DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun actool \"$PWD/build/Biller.icon\" --compile \"$PWD/build/icon-out\" --platform macosx --minimum-deployment-target 12.0 --app-icon Biller --output-partial-info-plist \"$PWD/build/icon-out/partial.plist\" > /dev/null && test -f build/icon-out/Assets.car && test -f build/icon-out/Biller.icns"
   },
   "devDependencies": {
     "electron": "^45.5.0",
@@ -18,7 +19,7 @@
   "build": {
     "appId": "com.langoormedia.biller",
     "productName": "Biller",
-    "copyright": "© Langoor Media LLP",
+    "copyright": "\u00a9 Langoor Media LLP",
     "files": [
       "main.js",
       "web/**/*"
@@ -28,7 +29,7 @@
       "buildResources": "build"
     },
     "mac": {
-      "icon": "build/icon.icns",
+      "icon": "build/icon-out/Biller.icns",
       "category": "public.app-category.business",
       "identity": "-",
       "hardenedRuntime": false,
@@ -38,6 +39,15 @@
           "arch": [
             "arm64"
           ]
+        }
+      ],
+      "extendInfo": {
+        "CFBundleIconName": "Biller"
+      },
+      "extraResources": [
+        {
+          "from": "build/icon-out/Assets.car",
+          "to": "Assets.car"
         }
       ]
     },
