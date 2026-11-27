@@ -1,0 +1,66 @@
+{
+  "name": "biller",
+  "productName": "Biller",
+  "version": "1.0.0",
+  "description": "Biller: quotation & invoice generator for Langoor Media LLP",
+  "author": "Langoor Media LLP",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "copy-web": "node copy-web.js",
+    "start": "npm run copy-web && electron .",
+    "dist": "npm run copy-web && electron-builder --mac dmg --arm64"
+  },
+  "devDependencies": {
+    "electron": "^45.5.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.langoormedia.biller",
+    "productName": "Biller",
+    "copyright": "© Langoor Media LLP",
+    "files": [
+      "main.js",
+      "web/**/*"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.business",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "Biller",
+      "artifactName": "Biller.dmg",
+      "background": "build/dmg-background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 140,
+          "y": 190
+        },
+        {
+          "x": 400,
+          "y": 190,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

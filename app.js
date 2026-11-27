@@ -386,6 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Backup button in the top bar, with a coloured status dot
   const backupBtn = document.createElement('button');
   backupBtn.type = 'button';
+  backupBtn.id = 'backup-btn';
   backupBtn.className = 'backup-btn noprint';
   backupBtn.innerHTML = '<span class="backup-dot"></span><span>Backup</span>';
   document.querySelector('.app-tabs').appendChild(backupBtn);
@@ -493,6 +494,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   idb.get('backupDir').then(h => { backupDir = h || null; updateBackupUI(); });
 
+  // Hooks for the Biller Mac app's File > Backup menu
+  window.billerDesktop = {
+    backupNow: async () => {
+      if (!backupDir) { downloadBackup(); return; }
+      if (await writeFolderBackup()) notify('Backed up.');
+      else backupBtn.click();
+    },
+    chooseBackupFolder: () => (canPickFolder ? chooseBackupFolder() : backupBtn.click())
+  };
+
   // --- Signature ---
   // The signature image is never published with the code. Each browser keeps its own copy
   // (uploaded here); a local sign.png next to index.html is used if no copy has been uploaded.
@@ -508,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const signBtn = document.createElement('button');
   signBtn.type = 'button';
+  signBtn.id = 'signature-btn';
   signBtn.className = 'backup-btn noprint';
   signBtn.textContent = 'Signature';
   backupBtn.insertAdjacentElement('beforebegin', signBtn);

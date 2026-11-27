@@ -7,3 +7,10 @@ sign.png
 # Never publish history backups (they contain client and invoice data)
 Backups/
 *.json
+
+# Mac app: keep its setup files, but not downloads or build output
+!desktop/package.json
+!desktop/package-lock.json
+desktop/node_modules/
+desktop/dist/
+desktop/web/
